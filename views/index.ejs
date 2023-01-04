@@ -11,11 +11,26 @@
 </head>
 
 <body>
-    <!--Todo Home Page-->
-    <%- include('header.ejs') %>
-    <br />
-    <%- include('todos.ejs') %>
-        <%- include('footer.ejs') %>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <%- include('header.ejs') %>
+                <form>
+                    <div class="flex gap-2 py-4">
+                        <div class="flex-auto">
+                            <input type="text" placeholder="Add something...."
+                                class="border border-gray-300 rounded-xl text-gray-900 w-full p-2 text-sm" required />
+                        </div>
+                        <div class="flex-auto">
+                            <input type="date" class="border border-gray-300 rounded-xl text-gray-900 w-full p-2 text-sm leading-4" />
+                        </div>
+                        <div class="flex-none">
+                            <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-medium mr-2">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <%- include('todos.ejs') %>
+        </div>
+        </div>
 </body>
 
 </html>
