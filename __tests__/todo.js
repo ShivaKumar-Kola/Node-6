@@ -64,6 +64,33 @@ describe("Todo Application", function () {
     const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
     expect(parsedUpdateResponse.completed).toBe(true);
   });
+  
+  test("Mark todo as incomplete", async () => {
+    let res = await agent.get("/");
+    let csrfToken = extractCSRFToken(res.text);
+    await agent.post("/todos").send({
+      title: "read a book",
+      dueDate: new Date().toISOString(),
+      _csrf: csrfToken,
+    });
+
+    const groupedTodos = await agent
+      .get("/todos")
+      .set("Accept", "application/json");
+    const parsedResponse = JSON.parse(groupedTodos.text);
+    const lastItem = parsedResponse[parsedResponse.length - 1];
+
+    res = await agent.get("/");
+    csrfToken = extractCSRFToken(res.text);
+
+    const markCompleteResponse = await agent.put(`/todos/${lastItem.id}`).send({
+      _csrf: csrfToken,
+      completed: false,
+    });
+
+    const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
+    expect(parsedUpdateResponse.completed).toBe(false);
+  });
 
   test("Delete todo", async () => {
     let res = await agent.get("/");
