@@ -6,7 +6,7 @@
     </h5>
 <ul class="list-none">
     <% for (let i=0; i < data.length; i++) { %>
-        <li class="cursor-pointer todo-item">
+        <li class="Todo-Item">
             <div class="flex gap-2 py-4 items-center px-3 py-2 hover:bg-purple-200 rounded w-fit text-gray-800 text-sm">
                 <input id="checkbox-<%= data[i].id %>" type="checkbox" <%=data[i].completed ?"checked":"" %>
                 onclick="updateTodo(<%= data[i].id %>,<%= !data[i].completed %>)" class="w-4 h-4 text-blue-600
