@@ -2,85 +2,96 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <title>To-Do Manager</title>
-    <link rel="stylesheet" href="./css/style.css" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/styles.css" rel="stylesheet">
+    <title>To-Do List</title>
     <script>
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const updateTodoStatus = (id, completed) => {
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        function updateTodo(id) {
+            const currentStatus = document.querySelector(`.todo-check-${id}`).checked;
             fetch(`/todos/${id}`, {
-                method: "PUT",
+                method: "put",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     "_csrf": token,
-                    "completed": completed
-                }),
+                    completed: currentStatus
+                })
             })
-                .then((data) => {
+                .then((res) => {
                     window.location.reload();
-                });
+                })
+                .catch((err) => console.error(err));
         }
-        const deleteTodo = (id) => {
+        function deleteTodo(id) {
             fetch(`/todos/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                method: "delete",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     "_csrf": token
-                }),
+                })
             })
-                .then((data) => {
-                    window.location.reload();
-                });
+                .then((res) => {
+                    if (res.ok) {
+                        window.location.reload();
+                    }
+                })
+                .catch((err) => console.error(err))
         }
     </script>
 </head>
 
-<body>
-    <div class="flex justify-center">
-        <div>
-            <%- include('header.ejs') %>
-                <% if(user){ %>
-                    <p>
-                        Welcome! <%= user.firstName %>
-                    </br>
-                            <a href="/signout" class="text-red-600">
-                                Signout
-                            </a>
-                    </p>
-                    <% } %>
+<body class="font-sans">
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <div class="font-bold py-3">
+                <%- include('header.ejs') %>
+                    <a href="/signout">signout</a>
+            </div>
+            <div>
+                <form action="/todos" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <div class="flex gap-2 py-4">
+                        <div class="flex-auto">
+                            <input type="text" name="title" placeholder="whats next?"
+                                class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+                        </div>
 
-                        <form action="/todos" method="post" class="flex gap-2 py-4">
-                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                            <input type="text" name="title" placeholder="Add something...."
-                                class="border border-gray-400 text-gray-900 rounded p-2 text-sm flex-auto" />
-                            <input name="dueDate" type="date"
-                                class="border border-gray-400 text-gray-900 rounded p-2 text-sm flex-auto" />
-                            <button type="submit" class="text-white px-3 py-2 bg-green-600 rounded">
-                                Add
-                            </button>
-                        </form>
-                        <% if(messages && messages.error && messages.error.length> 0) { %>
-                            <% for(var i=0; i<messages.error.length; i++) { %>
-                                <li>
-                                    <%= messages.error[i] %>
-                                </li>
-                                <% } %>
-                                    <% } %>
-                                        <%- include('todo.ejs', {data : overdueTodos, title: "Overdue" }) %>
-                                            <%- include('todo.ejs', {data : dueTodayTodos, title: "Due Today" }) %>
-                                                <%- include('todo.ejs', {data : dueLaterTodos, title: "Due Later" }) %>
-                                                    <%- include('todo.ejs', {data : completedTodos,
-                                                        title: "Completed Items" }) %>
+                        <div class="flex-auto">
+                            <input type="date" name="dueDate"
+                                class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4"
+                                required>
+                        </div>
+
+
+                        <div class="flex-none">
+                            <button type="submit"
+                                class="bg-green-500 text-white px-5 py-2 rounded font-medium mr-2 py1.5">Add</button>
+                        </div>
+                    </div>
+
+
+
+                </form>
+                <div>
+                    <%- include('todo.ejs', {title: "Overdue" , data: overdue}) %>
+                        <%- include('todo.ejs', {title: "Due Today" , data: dueToday}) %>
+                            <%- include('todo.ejs', {title: "Due Later" , data: dueLater}) %>
+                                <%- include('todo.ejs', {title: "Completed Items" , data: completedItems}) %>
+                </div>
+            </div>
+
+            <div class="text-center py-3">
+                <%- include('footer.ejs') %>
+            </div>
         </div>
     </div>
+
 </body>
 
 </html>

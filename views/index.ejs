@@ -1,36 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>TO-DO Manager</title>
-    <link rel="stylesheet" href="./css/style.css" />
-  </head>
-  <body class="p-4">
-    <div class="flex flex-col justify-center items-center gap-4">
-      <div class="col-start-3 col-span-2"><%- include('header.ejs') %></div>
-      <div class="flex flex-col justify-center">
-        <p class="py-2 text-3xl pb-6">TO-DO manager</p>
-        <div class="flex flex-col justify-center items-center">
-          <div class="w-1/2 flex flex-col justify-center">
-            <p>New here?</p>
-            <a
-              href="/signup"
-              class="px-8 bg-gray-100 hover:bg-green-200 p-2 rounded-lg border-2 border-black flex justify-center"
-              >Sign Up</a>
-
-            <p class="pt-6">Already have an account?</p>
-            <a
-              href="/login"
-              class="px-8 bg-gray-100 hover:bg-green-200 p-2 rounded-lg border-2 border-black flex justify-center"
-              >Login</a
-            >
-          </div>
+    <link href="./css/styles.css" rel="stylesheet"> 
+    <title>To-Do List</title>
+   
+</head>
+<body class="font-sans">
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <div class="text-center py-3"><%- include('header.ejs') %></div>
+            
+            <p class="py-2">Welcome to the Todo Application</p>
+            <p class="py-2">New here? <a href="/signup" class="text-green-600">Sign-up now</a></p>
+            <p class="py-2">Already have an account <a href="/login" class="text-green-600">Sign in</a></p> 
+            <div class="text-center py-3">
+                <%- include('footer.ejs') %>
+            </div>
+           
         </div>
-      </div>
     </div>
-    <div class="flex justify-center pt-16"><%- include('footer.ejs') %></div>
-  </body>
+    
+</body>
 </html>

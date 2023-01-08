@@ -1,51 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <title>
-        <%= title %>
-    </title>
-    <link rel="stylesheet" href="./css/style.css" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/styles.css" rel="stylesheet"> 
+    <title><%= title %></title>
 </head>
+<body class="font-sans">
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <div class="text-center">
+                <%- include('header.ejs') %>
+            </div>
+            <a class='text-black-700' href="/">Go Home</a>
+            <h6 class="py-6 text-center">Sign Up as a new User</h6>
 
-<body>
-    <div class="flex justify-center">
-        <div>
-            <%- include('header.ejs') %>
-            <p class="py-2"> <a href="/" class="text-green-600" >Go to Home page</a> </p>
-                <form action="/users" method="post" class="">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <div class="pb-4 flex items-center justify-between gap-2">
-                        <input type="text" name="firstName" placeholder="First Name" class="block text-gray-700 text-sm font-bold mb-2" />
-                        <input type="text" name="lastName" placeholder="Last Name" class="block text-gray-700 text-sm font-bold mb-2" />
-                    </div>
-                    <input type="text" name="email" placeholder="Email" class="pb-4 block text-gray-700 text-sm font-bold mb-2" />
-                    <input type="password" name="password" placeholder="Password" class="pb-4 block text-gray-700 text-sm font-bold mb-2" />
-                    <button type="submit"
-                        class="bg-blue-600 rounded p-2 block w-full text-white hover:bg-green-700 transition mt-2">
-                        Signup
-                    </button>
-                </form>
-                <% if(messages && messages.error && messages.error.length> 0) { %>
+            <div>
+                <% if(messages && messages.error && messages.error.length > 0)  { %>
                     <% for(var i=0; i<messages.error.length; i++) { %>
-                        <li>
-                            <%= messages.error[i] %>
-                        </li>
-                        <% } %>
-                            <% } %>
-
-                                <div class="text-center mt-6">
-                                    Already have an account? <a href="/login" class="text-green-600 hover:text-green-700 transition">Login here</a>
-                                </div>
+                            <li class="rounded-full border-2 p-2 bg-red-700 text-white"> <%= messages.error[i] %></li>
+                    <% } %>
+                  <% } %>
+            </div> 
+            
+            <form action="/users" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <div class="py-3">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" name="firstName" 
+                    class="border border-gray-700 text-gray-900 rounded p-2 w-full">
+                </div>
+                <div class="py-3">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" name="lastName"
+                    class="border border-gray-700 text-gray-900 rounded p-2 w-full">
+                </div>
+                <div class="py-3">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email"
+                    class="border border-gray-700 text-gray-900 rounded p-2 w-full">
+                </div>
+                <div class="py-3">
+                    <label for="password">password:</label>
+                    <input type="password" name="password"
+                    class="border border-gray-700 text-gray-900 rounded p-2 w-full">
+                </div>
+                <div class="py-3">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Sign Up</button>
+                </div>
+            </form>
         </div>
-
+         
     </div>
-    <script>
-        tc.c("input", "block mt-2 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent");
-    </script>
 </body>
+</html>
