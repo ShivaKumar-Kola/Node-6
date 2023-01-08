@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="<%= csrfToken %>">
     <title>To-Do Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./css/style.css"/>
+    <link rel="stylesheet" href="/public/css/style.css"/>
     <script>
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const updateTodoStatus = (id, completed) => {
