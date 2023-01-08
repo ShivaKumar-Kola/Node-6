@@ -1,64 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<%= csrfToken %>">
-    <title>To-Do Manager</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./css/style.css"/>
-    <script>
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const updateTodoStatus = (id, completed) => {
-            fetch(`/todos/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                "_csrf": token,
-                "completed": completed
-            }),
-        })
-            .then((data) => {
-                window.location.reload();
-            });
-        }
-        const deleteTodo = (id) => {
-        fetch(`/todos/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "_csrf": token
-            }),
-        })
-            .then((data) => {
-                window.location.reload();
-            });
-        }
-    </script>
-</head>
-<body>
-    <div class="flex justify-center">
-      <div class="w-[300px]">
-        <%- include('header.ejs') %>
-        <p class="py-2">To-Do Manager</p>
-          <p class="py-2">New User?</p>
-          <a class="login-button" href="/signup">Sign up</a>
-      </br>
-          <p class="py-2">Existing User?</p>
-          <a class="login-button" href="/login">Login</a>
-          
-      </div>
-  
-    </div>
-    <script>
-      tc.c(".login-button", "bg-green-400 rounded p-2 block w-full text-white hover:bg-green-700 transition mt-2 w-full text-center");
-    </script>
-    <%- include('footer.ejs') %>
-  </body>
+    <title>TO-DO Manager</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body class="p-4">
+    <div class="flex flex-col justify-center items-center gap-4">
+      <div class="col-start-3 col-span-2"><%- include('header.ejs') %></div>
+      <div class="flex flex-col justify-center">
+        <p class="py-2 text-3xl pb-6">TO-DO manager</p>
+        <div class="flex flex-col justify-center items-center">
+          <div class="w-1/2 flex flex-col justify-center">
+            <p>New here?</p>
+            <a
+              href="/signup"
+              class="px-8 bg-gray-100 hover:bg-green-200 p-2 rounded-lg border-2 border-black flex justify-center"
+              >Sign Up</a>
 
+            <p class="pt-6">Already have an account?</p>
+            <a
+              href="/login"
+              class="px-8 bg-gray-100 hover:bg-green-200 p-2 rounded-lg border-2 border-black flex justify-center"
+              >Login</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center pt-16"><%- include('footer.ejs') %></div>
+  </body>
 </html>
