@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/tailcombinator.js"></script>
+</head>
+
+<body>
+    <div class="flex justify-center">
+        <div>
+            <%- include('header.ejs') %>
+            <p class="py-2"> <a href="/" class="text-green-600" >Home page</a> </p>
+                <h6 class="pb-4">
+                    Login
+                </h6>
+                <form action="/session" method="post" class="min-w-[300px]">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="text" name="email" placeholder="Email" class="pb-4 block text-gray-700 text-sm font-bold mb-2" />
+                    <input type="password" name="password" placeholder="Password" class="pb-4 block text-gray-700 text-sm font-bold mb-2" />
+                    <button type="submit"
+                        class="bg-blue-600 rounded p-2 block w-full text-white hover:bg-green-700 transition mt-2">
+                        Login
+                    </button>
+                </form>
+                <% if(messages && messages.error && messages.error.length> 0) { %>
+                    <% for(var i=0; i<messages.error.length; i++) { %>
+                        <li>
+                            <%= messages.error[i] %>
+                        </li>
+                        <% } %>
+                            <% } %>
+                                <div class="text-center mt-6">
+                                    New User ? Create account here <a href="/signup" class="text-green-600 hover:text-green-700 transition"> Sign
+                                        up</a>
+                                </div>
+        </div>
+
+    </div>
+    <script>
+        tc.c("input", "block mt-2 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent");
+    </script>
+</body>

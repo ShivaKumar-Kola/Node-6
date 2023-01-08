@@ -5,21 +5,18 @@ module.exports = (sequelize, DataTypes) => {
   
     static associate(models) {
       // define association here
+      Todo.belongsTo(models.User, {
+        foreignKey: "userId",
+      });
     }
 
-    static addTodo({ title, dueDate }) {
-      return this.create({ title: title, dueDate: dueDate, completed: false });
+    static addTodo({ title, dueDate,userId }) {
+      return this.create({ title: title, dueDate: dueDate, completed: false,userId,});
     }
-    markAsCompleted() {
-      return this.update({ completed: true });
+    static getTodos(userId) {
+      return this.findAll({ order: [["id", "ASC"]],where: {userId,}, });
     }
-    deletetodo() {
-      return this.removetask(id);
-    }
-    static getTodos() {
-      return this.findAll({ order: [["id", "ASC"]] });
-    }
-    static overdue() {
+    static overdue(userId) {
       return this.findAll({
         where: {
           dueDate: {
@@ -30,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
-    static dueToday() {
+    static dueToday(userId) {
       return this.findAll({
         where: {
           dueDate: {
@@ -41,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
-    static dueLater() {
+    static dueLater(userId) {
       return this.findAll({
         where: {
           dueDate: {
@@ -52,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
-    static completedItems() {
+    static completedItems(userId) {
       return this.findAll({
         where: {
           completed: true,
@@ -60,6 +57,15 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
+
+    removeTodo(userId) {
+      if (this.userId === userId) {
+        return this.destroy();
+      } else {
+        throw new Error("Unauthorized");
+      }
+    }
+
     static async remove(id) {
       return this.destroy({
         where: {
@@ -67,15 +73,42 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-    setCompletionStatus(bool) {
-      return this.update({ completed: bool });
+    setCompletionStatus(completed, userId) {
+      if (this.userId === userId) {
+        return this.update({
+          completed,
+        });
+      } else {
+        throw new Error("Unauthorized");
+      }
     }
   }
-
   Todo.init(
     {
-      title: DataTypes.STRING,
-      dueDate: DataTypes.DATEONLY,
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "Title is required",
+          },
+          notEmpty: {
+            msg: "Title is required",
+          },
+        },
+      },
+      dueDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "Due date is required",
+          },
+          notEmpty: {
+            msg: "Due date is required",
+          },
+        },
+      },
       completed: DataTypes.BOOLEAN,
     },
     {

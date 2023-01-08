@@ -42,31 +42,23 @@
     </script>
 </head>
 <body>
-    <div class="grid grid-cols-6">
-        <div class="col-start-3 col-span-2">
-            <%- include('header.ejs') %>
-            <form action="/todos" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <div class="flex gap-2 py-4">
-                    <div class="flex-auto">
-                        <input type="text" name="title" placeholder="Add something..."
-                            class="border border-gray-300 rounded-xl text-gray-900 w-full p-2 text-sm" required />
-                    </div>
-                    <div class="flex-auto">
-                        <input type="date" name="dueDate" required
-                            class="border border-gray-300 rounded-xl text-gray-900 w-full p-2 text-sm leading-4" />
-                    </div>
-                    <div class="flex-none">
-                        <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded-2xl font-medium mr-2 mb-2">Add</button>
-                    </div>
-                </div>
-            </form>
-                <%- include('todo.ejs',{title:"Overdue",data:overdue}) %>
-                    <%- include('todo.ejs',{title:"Due Today",data:dueToday}) %>
-                        <%- include('todo.ejs',{title:"Due Later",data:dueLater}) %>
-                            <%- include('todo.ejs', {title: "Completed Items" , data: completedItems}) %>
-        </div>
+    <div class="flex justify-center">
+      <div class="w-[300px]">
+        <%- include('header.ejs') %>
+        <p class="py-2">To-Do Manager</p>
+          <p class="py-2">New User?</p>
+          <a class="login-button" href="/signup">Sign up</a>
+      </br>
+          <p class="py-2">Existing User?</p>
+          <a class="login-button" href="/login">Login</a>
+          
+      </div>
+  
     </div>
-</body>
+    <script>
+      tc.c(".login-button", "bg-green-400 rounded p-2 block w-full text-white hover:bg-green-700 transition mt-2 w-full text-center");
+    </script>
+    <%- include('footer.ejs') %>
+  </body>
 
 </html>
