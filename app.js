@@ -99,7 +99,7 @@ app.get(
       const overdue = await Todo.overDue(loggedInUser);
       const later = await Todo.dueLater(loggedInUser);
       const today = await Todo.dueToday(loggedInUser);
-      const complete = await Todo.completed(loggedInUser);
+      const complete = await Todo.completedItems(loggedInUser);
 
       const user = await User.findByPk(loggedInUser);
       const username =
