@@ -1,31 +1,37 @@
 const express = require("express");
-const csrf = require("tiny-csrf");
 const app = express();
+const csrf = require("tiny-csrf");
+var cookieParser = require("cookie-parser");
+const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
 const path = require("path");
 
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const session = require("express-session");
 const connectEnsureLogin = require("connect-ensure-login");
-const bcrypt = require("bcrypt");
+const session = require("express-session");
+const localStrategy = require("passport-local");
+
 const flash = require("connect-flash");
 app.set("views", path.join(__dirname, "views"));
-const { Todo, User } = require("./models");
+
+const bcrypt = require("bcrypt");
+
 const saltRounds = 10;
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser("shh"));
-app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+
 app.use(flash());
 
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser("ssh! some secret string!"));
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+
 app.set("view engine", "ejs");
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
-    secret: "my-super-secret-key-21728172615261562",
+    secret: "my-super-secret-key-2178172615261562",
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
     },
@@ -41,32 +47,33 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(
-  new LocalStrategy(
+  new localStrategy(
     {
       usernameField: "email",
       passwordField: "password",
     },
-    (email, password, done) => {
-      User.findOne({ where: { email } })
+    (username, password, done) => {
+      User.findOne({ where: { email: username } })
         .then(async (user) => {
-          if (!user) {
-            return done(null, false, { message: "Incorrect username." });
-          }
           const result = await bcrypt.compare(password, user.password);
           if (result) {
             return done(null, user);
           } else {
-            return done(null, false, { message: "Incorrect password." });
+            return done(null, false, { message: "Invalid password" });
           }
         })
-        .catch((err) => {
-          done(err, null);
+        .catch((error) => {
+          console.log(error);
+          return done(null, false, {
+            message: "This email is not registered",
+          });
         });
     }
   )
 );
 
 passport.serializeUser((user, done) => {
+  console.log("Serializing user in session", user.id);
   done(null, user.id);
 });
 
@@ -75,12 +82,10 @@ passport.deserializeUser((id, done) => {
     .then((user) => {
       done(null, user);
     })
-    .catch((err) => {
-      done(err, null);
+    .catch((error) => {
+      done(error, null);
     });
 });
-
-
 
 app.get("/", async function (request, response) {
   response.render("index", {
@@ -96,10 +101,10 @@ app.get(
     console.log("Processing list of all Todos ...");
     try {
       const loggedInUser = request.user.id;
-      const overdue = await Todo.overDue(loggedInUser);
-      const later = await Todo.dueLater(loggedInUser);
-      const today = await Todo.dueToday(loggedInUser);
-      const complete = await Todo.completedItems(loggedInUser);
+      const overdue = await Todo.getOverDue(loggedInUser);
+      const later = await Todo.getDueLater(loggedInUser);
+      const today = await Todo.getDueToday(loggedInUser);
+      const complete = await Todo.getCompleted(loggedInUser);
 
       const user = await User.findByPk(loggedInUser);
       const username =
@@ -158,7 +163,7 @@ app.post(
         dueDate: request.body.dueDate,
         userId: request.user.id,
       });
-      return response.redirect("/todos"); // response.json(todo);
+      return response.redirect("/todos"); 
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
@@ -188,7 +193,6 @@ app.delete(
   "/todos/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    console.log("We have to delete a Todo with ID: ", request.params.id);
     try {
       await Todo.remove(request.params.id, request.user.id);
       return response.json({ success: true });
@@ -237,7 +241,7 @@ app.post("/users", async (request, response) => {
   }
 
   if (request.body.password.length < 8) {
-    request.flash("error", "Password should be atleast 8 characters");
+    request.flash("error", "Password should be atleast 8 characters long");
     return response.redirect("/signup");
   }
   // hasing the password
