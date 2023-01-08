@@ -96,10 +96,10 @@ app.get(
     console.log("Processing list of all Todos ...");
     try {
       const loggedInUser = request.user.id;
-      const overdue = await Todo.getOverDue(loggedInUser);
-      const later = await Todo.getDueLater(loggedInUser);
-      const today = await Todo.getDueToday(loggedInUser);
-      const complete = await Todo.getCompleted(loggedInUser);
+      const overdue = await Todo.OverDue(loggedInUser);
+      const later = await Todo.DueLater(loggedInUser);
+      const today = await Todo.DueToday(loggedInUser);
+      const complete = await Todo.Completed(loggedInUser);
 
       const user = await User.findByPk(loggedInUser);
       const username =
