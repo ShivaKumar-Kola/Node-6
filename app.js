@@ -102,18 +102,17 @@ app.get('/', async (request, response) => {
 
 app.get('/todos',connectEnsureLogin.ensureLoggedIn(), async (request, response)=>{
   const loggedInUser = request.user.id;
-  const allTodos = await Todo.getTodos(loggedInUser);
   const overdue = await Todo.overdue(loggedInUser);
   const dueToday = await Todo.dueToday(loggedInUser);
   const dueLater = await Todo.dueLater(loggedInUser);
   const completedItems = await Todo.completedItems(loggedInUser);
   if (request.accepts('html')) {
     response.render('todos', {
-      allTodos, overdue, dueToday, dueLater, completedItems,
+      overdue, dueToday, dueLater, completedItems,
       csrfToken: request.csrfToken(),
     });
   } else {
-    response.json({ allTodos, overdue, dueToday, dueLater });
+    response.json({overdue, dueToday, dueLater,completedItems });
   }
 });
 
