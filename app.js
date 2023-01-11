@@ -92,30 +92,32 @@ app.get(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const userId = request.user.id;
-    const overdueTodos = await Todo.overdue(userId);
-    const dueTodayTodos = await Todo.dueToday(userId);
-    const dueLaterTodos = await Todo.dueLater(userId);
-    const completedTodos = await Todo.completed(userId);
-    if (request.accepts("html")) {
-      response.render("todos", {
-        overdueTodos,
-        dueTodayTodos,
-        dueLaterTodos,
-        completedTodos,
-        user: request.user,
-        csrfToken: request.csrfToken(),
-      });
-    } else {
-      response.json({
-        overdueTodos,
-        dueTodayTodos,
-        dueLaterTodos,
-        completedTodos,
-      });
-    }
-  }
-);
+    try{
+      const userId = request.user.id;
+      const overdueTodos = await Todo.overdue(userId);
+      const dueTodayTodos = await Todo.dueToday(userId);
+      const dueLaterTodos = await Todo.dueLater(userId);
+      const completedTodos = await Todo.completed(userId);
+      if (request.accepts("html")) {
+        response.render("todos", {
+          overdueTodos,
+          dueTodayTodos,
+          dueLaterTodos,
+          completedTodos,
+          user: request.user,
+          csrfToken: request.csrfToken(),
+        });
+      } else {
+        response.json({
+          overdueTodos,
+          dueTodayTodos,
+          dueLaterTodos,
+          completedTodos });
+      }
+    } catch(error){
+      console.log(error);
+      return response.status(422).json(error);
+    }});
 
 app.get("/signup", (request, response) => {
   response.render("signup", {
