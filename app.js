@@ -17,7 +17,7 @@ const saltRounds = 10;
 const flash = require('connect-flash');
 
 app.use(express.urlencoded({ extended: false }));
-const path = require('path');
+
 app.set('views',path.join(__dirname,'views'));
 app.use(flash());
 const user = require('./models/user');
