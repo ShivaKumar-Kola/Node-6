@@ -14,8 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({ title: title, dueDate: dueDate, completed: false, userId});
     }
 
-    static getTodos() {
-      return this.findAll();
+    static getTodos(userId) {
+      return this.findAll({
+        order: [["id", "ASC"]],
+        where: {
+          userId,
+        },
+      });
     }
 
     static async overdue(userId) {
@@ -70,13 +75,38 @@ module.exports = (sequelize, DataTypes) => {
     }
 
   }
-  Todo.init({
-    title: DataTypes.STRING,
-    dueDate: DataTypes.DATEONLY,
-    completed: DataTypes.BOOLEAN,
-  }, {
-    sequelize,
-    modelName: 'Todo',
-  });
+  Todo.init(
+    {
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "Title is required",
+          },
+          notEmpty: {
+            msg: "Title is required",
+          },
+        },
+      },
+      dueDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "Due date is required",
+          },
+          notEmpty: {
+            msg: "Due date is required",
+          },
+        },
+      },
+      completed: DataTypes.BOOLEAN,
+    },
+    {
+      sequelize,
+      modelName: "Todo",
+    }
+  );
   return Todo;
 };

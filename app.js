@@ -6,6 +6,7 @@ const csrf = require('tiny-csrf');
 const {Todo, User} = require('./models');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const path = require("path");
 
 const passport = require('passport');
 const connectEnsureLogin = require('connect-ensure-login');
@@ -39,31 +40,32 @@ app.use((request, response, next)=>{
   next();
 });
 
-passport.use(new LocalStrategy({
-  usernameField: 'email',
-  password: 'password',
-},(username, password, done) => {
-  User.findOne({
-    where:{
-      email:username,
-      
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    (email, password, done) => {
+      User.findOne({ where: { email } })
+        .then(async (user) => {
+          if (!user) {
+            return done(null, false, { message: "Incorrect username." });
+          }
+          const result = await bcrypt.compare(password, user.password);
+          if (result) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: "Incorrect password." });
+          }
+        })
+        .catch((err) => {
+          done(err, null);
+        });
     }
-  })
-  .then(async(user) => {
-    const result = await bcyrpt.compare(password, user.password);
-    if(result){
-      return done(null,user);
-    } else{
-      return done(null, false, {message: "Invalid Password"});
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-    return done(null,false,{
-      message: "Register First"
-  })
-})
-}))
+  )
+);
+
 
 
 passport.serializeUser((user, done)=>{
@@ -82,11 +84,11 @@ passport.deserializeUser((id,done) => {
 })
 
 
-// seting the ejs is the engine
+
 app.set('view engine', 'ejs');
 
 app.get('/', async (request, response) => {
-  if(request.user)
+  if(request.user && request.user.id)
   {
     response.redirect('/todos');
   }

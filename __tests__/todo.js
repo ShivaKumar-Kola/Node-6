@@ -20,6 +20,12 @@ const login = async (agent, username, password) => {
   });
 };
 
+
+const logout = async (agent) => {
+  const res = await agent.get("/signout");
+  return res;
+};
+
 describe('todo tests', () => {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
@@ -27,9 +33,15 @@ describe('todo tests', () => {
     agent = request.agent(server);
   });
   afterAll(async () => {
-    await db.sequelize.close();
-    server.close();
+    try {
+      await db.sequelize.close();
+      await server.close();
+    } catch (error) {
+      console.log(error);
+    }
   });
+
+
   test('user1 signup', async () => {
     let res = await agent.get("/signup");
     const csrfToken = fetchCsrfToken(res);
@@ -71,7 +83,7 @@ describe('todo tests', () => {
     const getResponse = await agent.get("/todos");
     const csrfToken = fetchCsrfToken(getResponse);
     const response = await agent.post('/todos').send({
-      title: 'copyright year fixed',
+      title: 'buy groceries',
       dueDate: new Date().toISOString(),
       completed: false,
       _csrf: csrfToken,
