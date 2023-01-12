@@ -51,14 +51,14 @@
         <div class="col-start-3 col-span-2">
             <div class="font-bold py-3">
                 <%- include('header.ejs') %>
-                    <a href="/signout">signout</a>
+                    <button><a href="/signout">signout</a></button>
             </div>
             <div>
                 <form action="/todos" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <div class="flex gap-2 py-4">
                         <div class="flex-auto">
-                            <input type="text" name="title" placeholder="whats next?"
+                            <input type="text" name="title" placeholder="Add something...."
                                 class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
                         </div>
 
