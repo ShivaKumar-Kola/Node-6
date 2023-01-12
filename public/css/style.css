@@ -3,6 +3,6 @@ body {
     background-color: rgb(231, 191, 191);
 }
 
-.Todo-Item:hover .trash-icon {
+.Todo-item:hover .trash-icon {
   display: block;
 }
